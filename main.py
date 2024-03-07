@@ -17,12 +17,20 @@ colorama.init()
 api_key = dotenv_values['OPENAI_API_KEY']
 client = OpenAI(api_key=api_key)
 
-def generate_response(history):
-    completion = client.chat.completions.create(
+def stream_response(history, ai_name, color):
+    response = ""
+    stream = client.chat.completions.create(
         model="gpt-4",
-        messages=history
+        messages=history,
+        stream=True,
     )
-    return completion.choices[0].message
+    for chunk in stream:
+        if chunk.choices[0].delta.content is not None:
+            content = chunk.choices[0].delta.content
+            print(color + content + colorama.Style.RESET_ALL, end="", flush=True)
+            response += content
+    print()  # Print a newline after the response
+    return response
 
 if __name__ == "__main__":
     while True:
@@ -49,12 +57,14 @@ if __name__ == "__main__":
             if continue_str != "":
                 break
             
-            response1 = generate_response(history1)
-            history1.append({"role": "assistant", "content": response1.content})
-            history2.append({"role": "user", "content": response1.content})
-            print(colorama.Fore.BLUE + ai_name_one + ": " + response1.content + colorama.Style.RESET_ALL + "\n")
+            print(colorama.Fore.BLUE + ai_name_one + ": ", end="")
+            response1 = stream_response(history1, ai_name_one, colorama.Fore.BLUE)
+            history1.append({"role": "assistant", "content": response1})
+            history2.append({"role": "user", "content": response1})
             
-            response2 = generate_response(history2)
-            history2.append({"role": "assistant", "content": response2.content})
-            history1.append({"role": "user", "content": response2.content})
-            print(colorama.Fore.MAGENTA + ai_name_two + ": " + response2.content + colorama.Style.RESET_ALL + "\n")
+            print(colorama.Fore.MAGENTA + ai_name_two + ": ", end="")
+            response2 = stream_response(history2, ai_name_two, colorama.Fore.MAGENTA)
+            history2.append({"role": "assistant", "content": response2})
+            history1.append({"role": "user", "content": response2})
+            
+            print()  # Print a newline after each AI's response
