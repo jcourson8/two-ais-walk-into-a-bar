@@ -19,7 +19,7 @@ client = OpenAI(api_key=api_key)
 
 def generate_response(history):
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=history
     )
     return completion.choices[0].message

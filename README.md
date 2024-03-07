@@ -1,6 +1,6 @@
 # Two AIs Walk Into a Bar
 
-This is a Python script that simulates a conversation between two AI agents using OpenAI's GPT-3.5-turbo model. The user can give each AI a name and a system prompt, and the AIs will engage in a back-and-forth conversation based on their respective prompts.
+This is a Python script that simulates a conversation between two AI agents using OpenAI's GPT-4 model. The user can give each AI a name and a system prompt, and the AIs will engage in a back-and-forth conversation based on their respective prompts.
 
 ## Getting Started
 
